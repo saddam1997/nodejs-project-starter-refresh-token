@@ -12,7 +12,7 @@ let NewsSchema = new Schema({
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // required: true
     },        
     createdAt: {
         type: Number,

@@ -9,6 +9,7 @@ const CONSTANTS = require('../../utils/constants');
 const CONSTANTS_MSG = require('../../utils/constantsMessage');
 const apiSuccessRes = globalFunction.apiSuccessRes;
 const apiErrorRes = globalFunction.apiErrorRes;
+const tokenList = {}
 
 
 async function register(req, res) {
@@ -79,8 +80,11 @@ async function login(req, res) {
 
   if (userData.statusCode === CONSTANTS.SUCCESS) {
 
-    const token = jwt.sign({ userId: userData.data.id }, settings.secret);
-    let returnData = { email: userData.data.email, token };
+    const token = jwt.sign({ userId: userData.data.id }, settings.secret, { expiresIn: 900 });
+
+    const refreshToken = jwt.sign({ userId: userData.data.id }, settings.secret, { expiresIn: 86400 })
+    let returnData = { email: userData.data.email, token, refreshToken };
+    tokenList[refreshToken] = returnData
     console.log(returnData);
     return apiSuccessRes(req, res, CONSTANTS_MSG.LOGIN_SUCCESS, returnData);
   } else if (userData.statusCode === CONSTANTS.NOT_VERIFIED) {
@@ -130,7 +134,27 @@ async function changepassword(req, res) {
     return apiErrorRes(req, res, CONSTANTS_MSG.LOGIN_FAILURE);
   }
 }
+async function token(req, res) {
+  const postData = req.body
+    // if refresh token exists
+    if((postData.refreshToken) && (postData.refreshToken in tokenList)) {
+        const user = {
+            "email": postData.email,
+            "name": postData.name
+        }
+        const token = jwt.sign(user, settings.secret, { expiresIn: 900})
+        const response = {
+            "token": token,
+        }
+        // update the token in the list
+        tokenList[postData.refreshToken].token = token
+        res.status(200).json(response);        
+    } else {
+        res.status(404).send('Invalid request')
+    }
+}
 
+router.post('/token', token);
 router.post('/register', register);
 router.post('/login', login);
 router.post('/changepassword', changepassword);

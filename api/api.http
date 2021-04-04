@@ -1,3 +1,6 @@
+####
+
+@token=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTc1NjI3MjgsImV4cCI6MTYxNzU2MzYyOH0.gBltCQZOqQ8DEmRKHZ2KTd17G2kszsCwI3xBDGIPDt4
 
 
 ### Term and condition API 
@@ -5,7 +8,7 @@ POST http://localhost:5000/api/v1/register HTTP/1.1
 Content-type: application/json
 
 {
-   "email":"admin@gmail.com",
+   "email":"admin1@gmail.com",
    "password":"123456"
 }
 
@@ -16,14 +19,32 @@ POST http://localhost:5000/api/v1/login HTTP/1.1
 Content-type: application/json
 
 {
+    "email":"admin1@gmail.com",
+    "password":"123456"
+}
+
+### Term and condition API 
+POST http://localhost:5000/api/v1/login HTTP/1.1
+Content-type: application/json
+
+{
     "email":"admin@gmail.com",
     "password":"123456"
+}
+
+### Term and condition API 
+POST http://localhost:5000/api/v1/token HTTP/1.1
+Content-type: application/json
+
+{
+    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MDZhMGMxNjZlNjQ1YzU0ZDg5ZWI2OTMiLCJpYXQiOjE2MTc1NjI2NTMsImV4cCI6MTYxNzY0OTA1M30.kz0dfFG22k2ioiryqpzjsCar15vVBQF8zAKVGKaMhkY"
 }
 
 
 ### Term and condition API 
 POST http://localhost:5000/api/v1/createNews HTTP/1.1
 Content-type: application/json
+Authorization: {{token}}
 
 {
     "author":"6066bd944b5b943439f2446a",
@@ -34,6 +55,7 @@ Content-type: application/json
 ### Term and condition API 
 POST http://localhost:5000/api/v1/getNewsList HTTP/1.1
 Content-type: application/json
+Authorization: {{token}}
 
 {
     "keyWord": "",
